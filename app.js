@@ -6,6 +6,8 @@ const MIN_PLAYER_DAMAGE = 8;
 const MAX_PLAYER_DAMAGE = 15;
 const MIN_SPECIAL_ATTACK_DAMAGE = 15;
 const MAX_SPECIAL_ATTACK_DAMAGE = 20;
+const MIN_HEAL_VALUE = 8;
+const MAX_HEAL_VALUE = 20;
 
 const app = Vue.createApp({
   data() {
@@ -25,6 +27,9 @@ const app = Vue.createApp({
     isSpecialAttackDisabled() {
       return this.roundsCounter % 3;
     },
+    isHealPlayerDisabled() {
+      return this.playerHealth === 100;
+    },
   },
   methods: {
     attackPlayer() {
@@ -34,17 +39,28 @@ const app = Vue.createApp({
       );
       this.playerHealth -= attackDamageValue;
     },
-    attackMonster(isSuperAttack = false) {
+    attackMonster(isSpecialAttack = false) {
       this.roundsCounter += 1;
 
-      const maxValue = isSuperAttack
+      const maxValue = isSpecialAttack
         ? MAX_SPECIAL_ATTACK_DAMAGE
         : MAX_MONSTER_DAMAGE;
-      const minValue = isSuperAttack
+      const minValue = isSpecialAttack
         ? MIN_SPECIAL_ATTACK_DAMAGE
         : MIN_MONSTER_DAMAGE;
       const attackDamageValue = getRandomValue(maxValue, minValue);
       this.monsterHealth -= attackDamageValue;
+      this.attackPlayer();
+    },
+    healPlayer() {
+      this.roundsCounter += 1;
+
+      const healValue = getRandomValue(MAX_HEAL_VALUE, MIN_HEAL_VALUE);
+      if (this.playerHealth + healValue > 100) {
+        this.playerHealth = 100;
+      } else {
+        this.playerHealth += healValue;
+      }
       this.attackPlayer();
     },
   },
