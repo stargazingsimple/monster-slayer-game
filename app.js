@@ -1,4 +1,4 @@
-import { getRandomValue } from './utils.js';
+import { getRandomValue } from "./utils.js";
 
 const MIN_MONSTER_DAMAGE = 5;
 const MAX_MONSTER_DAMAGE = 12;
@@ -15,6 +15,7 @@ const app = Vue.createApp({
       monsterHealth: 100,
       playerHealth: 100,
       roundsCounter: 0,
+      winner: null,
     };
   },
   computed: {
@@ -35,7 +36,7 @@ const app = Vue.createApp({
     attackPlayer() {
       const attackDamageValue = getRandomValue(
         MAX_PLAYER_DAMAGE,
-        MIN_PLAYER_DAMAGE
+        MIN_PLAYER_DAMAGE,
       );
       this.playerHealth -= attackDamageValue;
     },
@@ -64,6 +65,19 @@ const app = Vue.createApp({
       this.attackPlayer();
     },
   },
+  watch: {
+    monsterHealth(value) {
+      if (this.playerHealth <= 0) {
+        if (value <= 0) {
+          this.winner = "draw";
+        } else {
+          this.winner = "monster";
+        }
+      } else if (value <= 0) {
+        this.winner = "player";
+      }
+    },
+  },
 });
 
-app.mount('#game');
+app.mount("#game");
