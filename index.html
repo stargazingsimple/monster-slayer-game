@@ -37,7 +37,7 @@
         <button @click="restartGame">Restart game</button>
       </section>
       <section v-else id="controls">
-        <button @click="attackMonster">ATTACK</button>
+        <button @click="attackMonster(false)">ATTACK</button>
         <button
           :disabled="isSpecialAttackDisabled"
           @click="attackMonster(true)"
@@ -51,7 +51,20 @@
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li
+            v-for="({ actionBy, actionType, value }, idx) in logMessages"
+            :key="idx"
+          >
+            <span :class="`log--${actionBy}`">{{actionBy.toUpperCase()}}</span>
+            <span v-if="actionType === 'heal'">
+              heals himself for <span class="log--heal">{{value}}%</span>
+            </span>
+            <span v-else>
+              attacks and deals <span class="log--damage">{{value}}%</span>
+            </span>
+          </li>
+        </ul>
       </section>
     </div>
   </body>
